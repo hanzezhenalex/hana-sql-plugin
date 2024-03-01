@@ -1,0 +1,31 @@
+/* definition of a procedure */
+PROCEDURE "procedure.name"(
+  IN param1 "variable.type", /* input param */
+  IN var_1 NVARCHAR(32) default 'DEFAULT_VALUE',
+)
+LANGUAGE SQLSCRIPT
+SQL SECURITY INVOKER
+READS SQL DATA AS
+
+BEGIN
+  /* declare var */
+  DECLARE var_2 VARCHAR(32) := '123';
+  
+  /* if-else condition */
+  IF :var_1 = :var_2 THEN
+    var_3 = 
+      SELECT 
+        id 
+      FROM "table1"
+    ;
+  END IF;
+
+  /* call another procedure*/
+  CALL "another.procedure"(
+    :var_3,
+  );  
+
+END
+ 
+ 
+ 
