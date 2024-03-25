@@ -27,7 +27,7 @@ COMMENT     "/*"([^*]|"*"+[^*/])*"*"+"/"
 <PROCEDURE_NAME>{STRING}                            { print("PROCEDURE_NAME"); }
 <PROCEDURE_NAME>"("                                 { BEGIN(PROCEDURE_PARAM); }
 
-<PROCEDURE_PARAM>.+","                              { print("PROCEDURE_PARAM"); }
+<PROCEDURE_PARAM>[IN|OUT].+","                      { print("PROCEDURE_PARAM"); }
 <PROCEDURE_PARAM>")"                                { BEGIN(PROCEDURE_SETTING); }
 
 <PROCEDURE_SETTING>"BEGIN"[\t\n]                    { BEGIN(CODE_BLOCK); }
