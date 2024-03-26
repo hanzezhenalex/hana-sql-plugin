@@ -10,6 +10,7 @@ void print(char* type_ ) {
 %}
 
 %s CODE_BLOCK
+%s CODE_BLCOK_CALL_PROCEDURE
 %s PROCEDURE_NAME
 %s PROCEDURE_PARAM
 %s PROCEDURE_SETTING
@@ -22,22 +23,22 @@ COMMENT     "/*"([^*]|"*"+[^*/])*"*"+"/"
 [ \t\n]                                             ;
 {COMMENT}                                           { print("COMMENT"); }
 
-<INITIAL>"PROCEDURE"                                { BEGIN(PROCEDURE_NAME); } 
+<INITIAL>(?i:PROCEDURE)                             { BEGIN(PROCEDURE_NAME); } 
 
 <PROCEDURE_NAME>{STRING}                            { print("PROCEDURE_NAME"); }
 <PROCEDURE_NAME>"("                                 { BEGIN(PROCEDURE_PARAM); }
 
-<PROCEDURE_PARAM>[IN|OUT].+","                      { print("PROCEDURE_PARAM"); }
+<PROCEDURE_PARAM>[(?i:IN)|(?i:OUT)].+","            { print("PROCEDURE_PARAM"); }
 <PROCEDURE_PARAM>")"                                { BEGIN(PROCEDURE_SETTING); }
 
-<PROCEDURE_SETTING>"BEGIN"[\t\n]                    { BEGIN(CODE_BLOCK); }
+<PROCEDURE_SETTING>(?i:BEGIN)[\t\n]                 { BEGIN(CODE_BLOCK); }
 <PROCEDURE_SETTING>.+[\t\n]                         { print("PROCEDURE_SETTING"); }
 
-<CODE_BLOCK>"END"                                   { BEGIN(FINISHED); }
-<CODE_BLOCK>"DECLARE"[^;]*";"                       { print("DECLARE"); }
-<CODE_BLOCK>"IF"(.|\n)*"END IF;"                    { print("IF-ELSE"); }
-<CODE_BLOCK>"CALL"[^;]*";"                          { print("CALL"); }
-<CODE_BLOCK>[A-Z][^;]*";"                           { print("OTHERS"); }
+<CODE_BLOCK>(?i:END)                                { BEGIN(FINISHED); }
+<CODE_BLOCK>(?i:DECLARE)[^;]*";"                    { print("DECLARE"); }
+<CODE_BLOCK>(?i:IF)(.|\n)*(?i:END" "IF)";"          { print("IF-ELSE"); }
+<CODE_BLOCK>(?i:CALL)[^;]*";"                       { print("CALL"); }
+<CODE_BLOCK>[^ ;]*";"                               { print("OTHERS"); }
 %%
 
 int main(int argc, char** argv) {
